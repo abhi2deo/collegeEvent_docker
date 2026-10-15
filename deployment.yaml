@@ -13,10 +13,10 @@ spec:
         app: college-event-portal
     spec:
       containers:
-        - name: web
-          image: abhinavdeo/college-eventlatest
-          ports:
-            - containerPort: 80
+          - name: web
+            image: abhinavdeo/college-event:latest
+            ports:
+              - containerPort: 80
           readinessProbe:
             httpGet:
               path: /
