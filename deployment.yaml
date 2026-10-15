@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: abhinavdeo/college-event-portal:latest
+          image: abhinavdeo/college-eventlatest
           ports:
             - containerPort: 80
           readinessProbe:
