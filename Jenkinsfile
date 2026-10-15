@@ -1,3 +1,10 @@
+parameters {
+    booleanParam(
+        name: 'SIMULATE_FAILURE',
+        defaultValue: false,
+        description: 'Deploy a faulty image to test automatic rollback'
+    )
+}
 pipeline {
     agent any
     environment {
@@ -38,26 +45,61 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Kubernetes') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-                    sh '''
-                      export KUBECONFIG="$KUBECONFIG_FILE"
-                      kubectl apply -f deployment.yaml
-                      kubectl set image deployment/$DEPLOYMENT web=$IMAGE
-                      if ! kubectl rollout status deployment/$DEPLOYMENT --timeout=120s; then
-                        echo "Rollout failed; restoring previous stable revision"
-                        kubectl rollout undo deployment/$DEPLOYMENT
-                        kubectl rollout status deployment/$DEPLOYMENT --timeout=120s
-                        exit 1
-                      fi
-                      kubectl get pods -l app=$DEPLOYMENT
-                      kubectl get service college-event-portal-service
-                    '''
+        
+stage('Deploy and Auto Rollback') {
+    steps {
+        script {
+            def deployImage = params.SIMULATE_FAILURE
+                ? 'YOUR_DOCKERHUB_USERNAME/college-event-portal:broken-demo'
+                : env.IMAGE
+
+            withCredentials([
+                file(credentialsId: 'kubeconfig',
+                     variable: 'KUBECONFIG_FILE')
+            ]) {
+                def result = bat(
+                    returnStatus: true,
+                    script: """
+                        @echo off
+                        set KUBECONFIG=%KUBECONFIG_FILE%
+
+                        echo Deploying Event Portal image...
+                        kubectl set image deployment/college-event-portal web=${deployImage}
+
+                        if errorlevel 1 exit /b 1
+
+                        echo Checking rollout...
+                        kubectl rollout status deployment/college-event-portal --timeout=90s
+
+                        if errorlevel 1 (
+                            echo FAILED ROLLOUT DETECTED
+                            echo Rolling back to previous stable version...
+
+                            kubectl rollout undo deployment/college-event-portal
+                            if errorlevel 1 exit /b 1
+
+                            kubectl rollout status deployment/college-event-portal --timeout=120s
+                            if errorlevel 1 exit /b 1
+
+                            echo ROLLBACK SUCCESSFUL
+                            exit /b 1
+                        )
+
+                        echo EVENT PORTAL DEPLOYMENT SUCCESSFUL
+                    """
+                )
+
+                if (result != 0 && !params.SIMULATE_FAILURE) {
+                    error('Event Portal deployment failed.')
+                }
+
+                if (result != 0) {
+                    echo 'Failure detected. Check rollback status and application.'
                 }
             }
         }
     }
+
     post {
         always { echo 'Pipeline finished. Check stage logs for the result.' }
     }
