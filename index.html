@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>College Event Portal</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px Arial,sans-serif;background:#f2f6ff;color:#202c45}header{background:#243b73;color:white;padding:28px 7%}nav{display:flex;gap:18px;flex-wrap:wrap}nav a{color:white}main{max-width:1100px;margin:24px auto;padding:0 18px}.events{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}.event{background:white;padding:20px;border-radius:12px;box-shadow:0 3px 14px #0001}.event h3{color:#243b73}.event button{padding:10px 14px;background:#243b73;color:white;border:0;border-radius:7px;cursor:pointer}.status{color:#137547;font-weight:bold}#message{padding:12px}
+</style></head><body><header><h1>College Event Management Portal</h1><p>Discover events, schedules, venues and registration information.</p><nav><a href="#events">Events</a><a href="#schedule">Schedule</a><a href="#updates">Updates</a></nav></header>
+<main><h2 id="events">Upcoming Events</h2><section class="events">
+<article class="event"><h3>CodeSprint Hackathon</h3><p>Date: 12 November 2026</p><p>Venue: Innovation Lab</p><p>Team coding challenge for all departments.</p><button onclick="register('CodeSprint Hackathon')">Register</button></article>
+<article class="event"><h3>TechNova Symposium</h3><p>Date: 18 November 2026</p><p>Venue: Main Auditorium</p><p>Technical talks, project demos and contests.</p><button onclick="register('TechNova Symposium')">Register</button></article>
+<article class="event"><h3>Culture Fest</h3><p>Date: 28 November 2026</p><p>Venue: College Grounds</p><p>Music, dance and inter-college activities.</p><button onclick="register('Culture Fest')">Register</button></article>
+<article class="event"><h3>Cloud Workshop</h3><p>Date: 4 December 2026</p><p>Venue: Computer Lab 2</p><p>Hands-on introduction to cloud technologies.</p><button onclick="register('Cloud Workshop')">Register</button></article>
+</section><p id="message" aria-live="polite"></p><h2 id="schedule">Schedule</h2><p>Events begin at 9:00 AM; check each event notice for the detailed agenda.</p><h2 id="updates">Event Updates</h2><p>Registration confirmations appear on this page. Contact the faculty coordinator for official updates.</p></main>
+<footer style="text-align:center;padding:24px">College Event Management Team</footer>
+<script>function register(name){document.getElementById('message').innerHTML='<span class="status">Demo registration recorded for '+name+'.</span>'}</script></body></html>
