@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: YOUR_DOCKERHUB_USERNAME/college-event-portal:latest
+          image: abhinavdeo/college-event-portal:latest
           ports:
             - containerPort: 80
           readinessProbe:
