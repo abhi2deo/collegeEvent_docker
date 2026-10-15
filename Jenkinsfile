@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        IMAGE = "YOUR_DOCKERHUB_USERNAME/college-event-portal:${BUILD_NUMBER}"
+        IMAGE = "abhinavdeo/college-event-portal:${BUILD_NUMBER}"
         DEPLOYMENT = "college-event-portal"
         CONTAINER = "web"
     }
